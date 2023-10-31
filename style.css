@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.container {
+  margin: 30px auto;
+  max-width: 800px;
+}
+
+.game {
+  width: 800px;
+  height: 800px;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0px;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+}
+
+.game-cell {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
