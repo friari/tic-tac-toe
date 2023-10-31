@@ -41,7 +41,16 @@ const runGame = ((gameboard) => {
     target.classList.add(`is-${_currentPlayer.token}`);
 
     let hasWin = _checkForWin();
-    if (hasWin) return _currentPlayer._playerWins++;
+    
+    if (hasWin) {
+      _currentPlayer._playerWins++;
+      console.log(`congratulations ${_currentPlayer.token}, you have won the game!`);
+      gameCellsDom.forEach(elem => {
+        elem.classList.remove('is-X', 'is-O');
+      })
+      gameboard.reset();
+      return;
+    }
 
     _currentPlayer = _currentPlayer === player1 ? player2 : player1;
   }
@@ -95,25 +104,3 @@ const runGame = ((gameboard) => {
 
   // runGame();
 })(gameboard);
-
-//until the first square is chosen, the current player is 1
-//when the first square gets selected:
-//  1. The controller checks if the square is currently undefined
-//  2. if it is, the current player's token takes that spot in the array and on the DOM board
-//    - if it isn't, the player needs to take another shot.
-//  3. if the array has three instances of X or O, the controller checks for a win
-
-
-// what does the player need to do?
-// player needs to be able to place token on board
-// is that all?
-// controller needs to know when the player is taking its turn, so maybe the player needs a playerturn?
-// no, the CONTROLLER needs a player turn
-
-// winning states
-// row1 = gameboard[0][0], gameboard[0][1], gameboard[0][2]
-// row2 = gameboard[1][0], gameboard[1][1], gameboard[1][2]
-// row3 = gameboard[2][0], gameboard[2][1], gameboard[2][2]
-[[0,0],[0,1],[0,2]]
-
-// so we'll need nested loops
