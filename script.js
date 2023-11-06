@@ -1,27 +1,27 @@
 // Gameboard, returns 2d board array and reset method
 const gameboard = (() => {
-  const _initGameboard = () => {
+  const init = () => {
     const _gameboardArray = [];
     for (let i = 0; i < 9; i++) {
       _gameboardArray.push(undefined);
     }
     return _gameboardArray;
   }
-  const board = _initGameboard();
-  const reset = _initGameboard;
 
-  return { board, reset };
+  return { init };
 })();
 
 // Player, sets player token
-const createPlayer = (token) => {
+const createPlayer = (name, token) => {
   let _playerWins = 0;
-  const hasWon = () => _playerWins++;
+  const increaseWins = () => _playerWins++;
+  const printWins = () => _playerWins;
 
-  return { token }
+  return { token, increaseWins }
 }
 
-const runGame = ((gameboard) => {
+const runGame = (board) => {
+  let hasWin = false;
   const player1 = createPlayer("X");
   const player2 = createPlayer("O");
 
@@ -35,20 +35,23 @@ const runGame = ((gameboard) => {
     const currentCell = target.getAttribute('data-cell');
     
     // returning if spot is taken
-    if (gameboard.board[currentCell]) return;
+    if (board[currentCell]) return;
 
-    gameboard.board[currentCell] = _currentPlayer.token;
+    board[currentCell] = _currentPlayer.token;
     target.classList.add(`is-${_currentPlayer.token}`);
 
-    let hasWin = _checkForWin();
+    hasWin = _checkForWin();
     
     if (hasWin) {
       _currentPlayer._playerWins++;
       console.log(`congratulations ${_currentPlayer.token}, you have won the game!`);
-      gameCellsDom.forEach(elem => {
-        elem.classList.remove('is-X', 'is-O');
-      })
-      gameboard.reset();
+      setTimeout(() => {
+        gameCellsDom.forEach(elem => {
+          elem.classList.remove('is-X', 'is-O');
+        });
+        board = gameboard.init();
+        hasWin = false;
+      }, 2000);
       return;
     }
 
@@ -65,7 +68,7 @@ const runGame = ((gameboard) => {
       let currentLine = [];
       for (j = 0; j < 3; j++) {
         let currentIndex = i + j;
-        currentLine.push(gameboard.board[currentIndex]);
+        currentLine.push(board[currentIndex]);
       }
       if (checkWinner(currentLine)) return currentLine[0];
     }
@@ -75,7 +78,7 @@ const runGame = ((gameboard) => {
       let currentLine = [];
       for (j = 0; j <= 6; j += 3) {
         let currentIndex = i + j;
-        currentLine.push(gameboard.board[currentIndex]);
+        currentLine.push(board[currentIndex]);
       }
       if (checkWinner(currentLine)) return currentLine[0];
     }
@@ -86,14 +89,14 @@ const runGame = ((gameboard) => {
         let currentLine = [];
         for (let j = 0; j <= 8; j += 4) {
           let currentIndex = i + j;
-          currentLine.push(gameboard.board[currentIndex]);
+          currentLine.push(board[currentIndex]);
         }
         if (checkWinner(currentLine)) return currentLine[0];
       } else {
         let currentLine = [];
         for (let j = 0; j <= 4; j += 2) {
           let currentIndex = i - j;
-          currentLine.push(gameboard.board[currentIndex]);
+          currentLine.push(board[currentIndex]);
         }
         if (checkWinner(currentLine)) return currentLine[0];
       }
@@ -101,6 +104,6 @@ const runGame = ((gameboard) => {
   }
 
   gameboardDom.addEventListener('click', _gameRound);
+};
 
-  // runGame();
-})(gameboard);
+runGame(gameboard.init());
