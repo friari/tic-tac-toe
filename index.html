@@ -10,22 +10,86 @@
 <body class="body">
   <div class="container">
     <div class="hud">
-      
+      <div class="player-card" data-player="player1">
+        <div class="player-card__name-container">
+          <p class="player-card__name" data-player-name>
+            Player One
+          </p>
+          <div class="player-wins">
+            Wins: <span data-wins>0</span>
+          </div>
+        </div>
+        <button
+          class="button button__secondary"
+          data-change-name-trigger
+        >
+          Change name?
+        </button>
+      </div>
+      <div class="player-card" data-player="player2">
+        <div class="player-card__name-container">
+          <p class="player-card__name" data-player-name>
+            Player Two
+          </p>
+          <div class="player-wins">
+            Wins: <span data-wins>0</span>
+          </div>
+        </div>
+        <button
+          class="button button__secondary"
+          data-change-name-trigger
+        >
+          Change name?
+        </button>
+      </div>
+      <button
+        class="button button__primary"
+        data-start-game
+      >
+        Play Game
+      </button>
     </div>
-    <div class="game" data-board>
-      <div class="game-cell" data-cell="0"></div>
-      <div class="game-cell" data-cell="1"></div>
-      <div class="game-cell" data-cell="2"></div>
-      <div class="game-cell" data-cell="3"></div>
-      <div class="game-cell" data-cell="4"></div>
-      <div class="game-cell" data-cell="5"></div>
-      <div class="game-cell" data-cell="6"></div>
-      <div class="game-cell" data-cell="7"></div>
-      <div class="game-cell" data-cell="8"></div>
+    <div class="game-container">
+      <div class="game" data-board>
+        <div class="game-cell" data-cell="0"></div>
+        <div class="game-cell" data-cell="1"></div>
+        <div class="game-cell" data-cell="2"></div>
+        <div class="game-cell" data-cell="3"></div>
+        <div class="game-cell" data-cell="4"></div>
+        <div class="game-cell" data-cell="5"></div>
+        <div class="game-cell" data-cell="6"></div>
+        <div class="game-cell" data-cell="7"></div>
+        <div class="game-cell" data-cell="8"></div>
+      </div>
     </div>
   </div>
-  <div class="modal-container">
-    <div class="modal"></div>
+  <div
+    class="modal-container hidden"
+    data-modal-container
+  >
+    <div class="modal modal__win" data-modal="win">
+      <h3>
+        <span data-winning-player></span> is the Winner!
+      </h3>
+      <button
+        class="button button__primary"
+        data-start-game
+      >
+        Play again?
+      </button>
+    </div>
+    <div
+      class="modal modal__player"
+    >
+      <input type="text" class="input">
+      <button
+        class="button button__primary"
+        data-submit-name
+      >
+        Change name
+      </button>
+    </div>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
