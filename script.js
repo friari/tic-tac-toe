@@ -140,16 +140,6 @@ const controller = (() => {
   
       board[currentCell] = currentPlayer.token;
       target.classList.add(`is-${currentPlayer.token}`);
-
-      const isBoardFull = !board.includes(undefined);
-
-      if (isBoardFull) {
-        openModal("endgame");
-        gameboardDom.removeEventListener('click', gameRound);
-        gameboardDom.classList.remove('playing');
-        gameboard.resetBoard();
-        return;
-      }
   
       hasWin = checkForWin();
       
@@ -159,6 +149,17 @@ const controller = (() => {
         openModal("endgame", currentPlayer);
         gameboardDom.removeEventListener('click', gameRound);
         gameboardDom.classList.remove('playing');
+        gameboard.resetBoard();
+        return;
+      }
+      
+      const isBoardFull = !board.includes(undefined);
+
+      if (isBoardFull) {
+        openModal("endgame");
+        gameboardDom.removeEventListener('click', gameRound);
+        gameboardDom.classList.remove('playing');
+        gameboard.resetBoard();
         return;
       }
   
