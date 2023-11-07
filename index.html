@@ -10,40 +10,42 @@
 <body class="body">
   <div class="container">
     <div class="hud">
-      <div class="player-card" data-player="player1">
-        <div class="player-card__name-container">
-          <p class="player-card__name" data-player-name>
-            Player One
-          </p>
-          <div class="player-wins">
-            Wins: <span data-wins>0</span>
+      <div class="player-cards">
+        <div class="player-card" data-player="player1">
+          <div class="player-card__name-container">
+            <p class="player-card__name" data-player-name>
+              Player One
+            </p>
+            <div class="player-wins">
+              Wins: <span data-wins>0</span>
+            </div>
           </div>
+          <button
+            class="button button__secondary"
+            data-change-name-trigger
+          >
+            Change name?
+          </button>
         </div>
-        <button
-          class="button button__secondary"
-          data-change-name-trigger
-        >
-          Change name?
-        </button>
-      </div>
-      <div class="player-card" data-player="player2">
-        <div class="player-card__name-container">
-          <p class="player-card__name" data-player-name>
-            Player Two
-          </p>
-          <div class="player-wins">
-            Wins: <span data-wins>0</span>
+        <div class="player-card" data-player="player2">
+          <div class="player-card__name-container">
+            <p class="player-card__name" data-player-name>
+              Player Two
+            </p>
+            <div class="player-wins">
+              Wins: <span data-wins>0</span>
+            </div>
           </div>
+          <button
+            class="button button__secondary"
+            data-change-name-trigger
+          >
+            Change name?
+          </button>
         </div>
-        <button
-          class="button button__secondary"
-          data-change-name-trigger
-        >
-          Change name?
-        </button>
       </div>
       <button
-        class="button button__primary"
+        class="button button__primary button__primary--large"
         data-start-game
       >
         Play Game
@@ -67,9 +69,8 @@
     class="modal-container hidden"
     data-modal-container
   >
-    <div class="modal modal__win" data-modal="win">
-      <h3>
-        <span data-winning-player></span> is the Winner!
+    <div class="modal modal__endgame" data-modal="win">
+      <h3 data-endgame-text>
       </h3>
       <button
         class="button button__primary"

@@ -64,13 +64,27 @@ button,
   flex: 1;
 }
 
-.player-card {
+.hud .button__primary {
+  align-self: center;
+}
 
+.player-cards {
+  display: flex;
+  justify-content: space-around;
+  padding: 2rem 0;
+}
+
+.player-card {
+  transition: all .2s ease-out;
+}
+
+.player-card.is-current {
+  transform: scale(1.2);
 }
 
 .player-card__name-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   flex-wrap: wrap;
   gap: .25rem;
@@ -78,6 +92,8 @@ button,
 
 .game-container {
   width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .game {
@@ -89,6 +105,21 @@ button,
   gap: 0px;
   border-left: 1px solid var(--charcoal);
   border-top: 1px solid var(--charcoal);
+  position: relative;
+}
+
+.game::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.game.playing::after {
+  display: none;
 }
 
 .game-cell {
@@ -98,13 +129,13 @@ button,
   position: relative;
 }
 
-.game-cell::after{
+.game-cell::after {
   display: inline-block;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   font: var(--fa-font-solid);
   position: absolute;
-  font-size: 14rem;
+  font-size: 7rem;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -133,29 +164,57 @@ button,
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 8px;
-  min-width: 300px;
-  padding: .75rem;
+  padding: .75rem 1rem;
   background-color: #7899D4;
   display: none;
+  gap: 1rem;
 }
 
-.modal-container.is-win > .modal__win {
-  display: block;
+.modal__endgame {
+  flex-direction: column;
+  align-items: center;
 }
 
+.modal-container.is-endgame > .modal__endgame,
 .modal-container.is-player > .modal__player {
-  display: block;
+  display: flex;
 }
 
 @media screen and (min-width: 900px) {
+  .button__primary {
+    padding: .7rem 1rem;
+    border-radius: 1.75rem;
+  }
+
+  .button__primary--large {
+    padding: 1rem 1.5rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+  }
+
   .container {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     gap: 2rem;
+  }
+
+  .hud {
+    justify-content: center;
+    max-width: 300px;
+  }
+
+  .player-card__name-container {
+    justify-content: space-between;
+    align-items: flex-start;
   }
   
   .game-container {
     width: 70%;
-    max-width: 800px;
+    max-width: 600px;
+    margin: 0;
+  }
+
+  .game-cell::after {
+    font-size: 10rem;
   }
 }

@@ -51,7 +51,7 @@ const controller = (() => {
     button.addEventListener('click', (e) => {
       const playerId = e.target.closest('[data-player]').getAttribute('data-player');
       const playerDetails = players.find(player => playerId === player.getId());
-      _openModal("name", playerDetails);
+      _openModal("player", playerDetails);
     })
   });
 
@@ -60,7 +60,6 @@ const controller = (() => {
       const parentContainer = e.target.closest('[data-player-name]');
       const playerId = parentContainer.getAttribute('data-player-name');
       const playerCard = document.querySelector(`[data-player=${playerId}`);
-      console.log(playerCard);
       const playerToChange = players.find(player => playerId === player.getId());
       const input = parentContainer.querySelector('.input');
 
@@ -84,16 +83,36 @@ const controller = (() => {
   }
 
   const _openModal = (modalType, playerDetails) => {
-    modalContainer.classList.remove('hidden');
+    modalContainer.classList.remove('hidden', 'is-player', 'is-endgame');
 
-    if (modalType === "win") {
-      modalContainer.classList.add('is-win');
-      modalContainer.querySelector('[data-winning-player]').innerText = playerDetails.getName();
+    if (modalType === "player") {
+      modalContainer.classList.add('is-player');
+      modalContainer.querySelector('.modal__player').setAttribute('data-player-name', playerDetails.getId());
       return;
     }
 
-    modalContainer.classList.add('is-player');
-    modalContainer.querySelector('.modal__player').setAttribute('data-player-name', playerDetails.getId());
+    modalContainer.classList.add('is-endgame');
+    let textContainer = modalContainer.querySelector('[data-endgame-text]')
+    
+    if (playerDetails) {
+      textContainer.innerText = `${playerDetails.getName()} is the winner!`;
+      return;
+    }
+
+    textContainer.innerText = 'Tie game!'
+    return;
+  }
+
+  const _updatePlayerWinDom = (player) => {
+    const winningPlayerDom = document.querySelector(`[data-player=${player.getId()}]`);
+    winningPlayerDom.querySelector('[data-wins]').innerText = player.printWins();
+  }
+
+  const _highlightCurrentPlayerDom = (player) => {
+    const playerCardsDom = document.querySelectorAll("[data-player]");
+    playerCardsDom.forEach(card => {
+      card.getAttribute('data-player') === player.getId() ? card.classList.add('is-current') : card.classList.remove('is-current');
+    })
   }
 
   playButtons.forEach(button => {
@@ -104,13 +123,15 @@ const controller = (() => {
 
       runGame(gameboard.init());
     });
-  })
+  });
 
   const runGame = (board) => {
     _cleanBoard();
+    gameboardDom.classList.add('playing');
     let hasWin = false;
   
     let _currentPlayer = player1;
+    _highlightCurrentPlayerDom(_currentPlayer);
   
     const _gameRound = (e) => {
       const target = e.target;
@@ -121,21 +142,29 @@ const controller = (() => {
   
       board[currentCell] = _currentPlayer.token;
       target.classList.add(`is-${_currentPlayer.token}`);
+
+      const isBoardFull = !board.includes(undefined);
+
+      if (isBoardFull) {
+        _openModal("endgame");
+        gameboardDom.removeEventListener('click', _gameRound);
+        gameboardDom.classList.remove('playing');
+        return;
+      }
   
       hasWin = _checkForWin();
       
       if (hasWin) {
         _currentPlayer.increaseWins();
-        console.log(`congratulations ${_currentPlayer.token}, you have won the game!`);
+        _updatePlayerWinDom(_currentPlayer);
+        _openModal("endgame", _currentPlayer);
         gameboardDom.removeEventListener('click', _gameRound);
-        setTimeout(() => {
-          board = gameboard.init();
-          hasWin = false;
-        }, 2000);
+        gameboardDom.classList.remove('playing');
         return;
       }
   
       _currentPlayer = _currentPlayer === player1 ? player2 : player1;
+      _highlightCurrentPlayerDom(_currentPlayer);
     }
   
     const _checkForWin = () => {
