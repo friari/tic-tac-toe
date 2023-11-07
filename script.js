@@ -1,14 +1,11 @@
 // Gameboard, returns 2d board array and reset method
 const gameboard = (() => {
-  const init = () => {
-    const _gameboardArray = [];
-    for (let i = 0; i < 9; i++) {
-      _gameboardArray.push(undefined);
-    }
-    return _gameboardArray;
-  }
+  const board = Array(9).fill(undefined);
 
-  return { init };
+  return {
+    getBoard: () => board,
+    resetBoard: () => board.fill(undefined),
+  };
 })();
 
 // Player, sets player token
@@ -43,7 +40,7 @@ const controller = (() => {
 
   modalContainer.addEventListener('click', (e) => {
     if (e.target === modalContainer) {
-      _closeModal();
+      closeModal();
     }
   });
 
@@ -51,7 +48,7 @@ const controller = (() => {
     button.addEventListener('click', (e) => {
       const playerId = e.target.closest('[data-player]').getAttribute('data-player');
       const playerDetails = players.find(player => playerId === player.getId());
-      _openModal("player", playerDetails);
+      openModal("player", playerDetails);
     })
   });
 
@@ -68,26 +65,27 @@ const controller = (() => {
 
       input.value = '';
 
-      _closeModal();
+      closeModal();
     })
   });
 
-  const _cleanBoard = () => {
+  const cleanBoard = () => {
     gameCellsDom.forEach(elem => {
       elem.classList.remove('is-X', 'is-O');
     });
   }
 
-  const _closeModal = () => {
+  const closeModal = () => {
     modalContainer.classList.add('hidden');
   }
 
-  const _openModal = (modalType, playerDetails) => {
+  const openModal = (modalType, playerDetails) => {
     modalContainer.classList.remove('hidden', 'is-player', 'is-endgame');
 
     if (modalType === "player") {
       modalContainer.classList.add('is-player');
       modalContainer.querySelector('.modal__player').setAttribute('data-player-name', playerDetails.getId());
+      modalContainer.querySelector('#name-change').focus();
       return;
     }
 
@@ -103,12 +101,12 @@ const controller = (() => {
     return;
   }
 
-  const _updatePlayerWinDom = (player) => {
+  const updatePlayerWinDom = (player) => {
     const winningPlayerDom = document.querySelector(`[data-player=${player.getId()}]`);
     winningPlayerDom.querySelector('[data-wins]').innerText = player.printWins();
   }
 
-  const _highlightCurrentPlayerDom = (player) => {
+  const highlightCurrentPlayerDom = (player) => {
     const playerCardsDom = document.querySelectorAll("[data-player]");
     playerCardsDom.forEach(card => {
       card.getAttribute('data-player') === player.getId() ? card.classList.add('is-current') : card.classList.remove('is-current');
@@ -118,56 +116,57 @@ const controller = (() => {
   playButtons.forEach(button => {
     button.addEventListener('click', () => {
       if (!modalContainer.classList.contains('hidden')) {
-        _closeModal();
+        closeModal();
       }
 
-      runGame(gameboard.init());
+      runGame(gameboard.getBoard());
     });
   });
 
   const runGame = (board) => {
-    _cleanBoard();
+    cleanBoard();
     gameboardDom.classList.add('playing');
     let hasWin = false;
   
-    let _currentPlayer = player1;
-    _highlightCurrentPlayerDom(_currentPlayer);
+    let currentPlayer = player1;
+    highlightCurrentPlayerDom(currentPlayer);
   
-    const _gameRound = (e) => {
+    const gameRound = (e) => {
       const target = e.target;
       const currentCell = target.getAttribute('data-cell');
       
       // returning if spot is taken
       if (board[currentCell]) return;
   
-      board[currentCell] = _currentPlayer.token;
-      target.classList.add(`is-${_currentPlayer.token}`);
+      board[currentCell] = currentPlayer.token;
+      target.classList.add(`is-${currentPlayer.token}`);
 
       const isBoardFull = !board.includes(undefined);
 
       if (isBoardFull) {
-        _openModal("endgame");
-        gameboardDom.removeEventListener('click', _gameRound);
+        openModal("endgame");
+        gameboardDom.removeEventListener('click', gameRound);
         gameboardDom.classList.remove('playing');
+        gameboard.resetBoard();
         return;
       }
   
-      hasWin = _checkForWin();
+      hasWin = checkForWin();
       
       if (hasWin) {
-        _currentPlayer.increaseWins();
-        _updatePlayerWinDom(_currentPlayer);
-        _openModal("endgame", _currentPlayer);
-        gameboardDom.removeEventListener('click', _gameRound);
+        currentPlayer.increaseWins();
+        updatePlayerWinDom(currentPlayer);
+        openModal("endgame", currentPlayer);
+        gameboardDom.removeEventListener('click', gameRound);
         gameboardDom.classList.remove('playing');
         return;
       }
   
-      _currentPlayer = _currentPlayer === player1 ? player2 : player1;
-      _highlightCurrentPlayerDom(_currentPlayer);
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+      highlightCurrentPlayerDom(currentPlayer);
     }
   
-    const _checkForWin = () => {
+    const checkForWin = () => {
       const checkWinner = (currentLine) => {
         return currentLine.every(val => val != undefined && val === currentLine[0]);
       };
@@ -212,6 +211,6 @@ const controller = (() => {
       }
     }
   
-    gameboardDom.addEventListener('click', _gameRound);
+    gameboardDom.addEventListener('click', gameRound);
   };
 })();
